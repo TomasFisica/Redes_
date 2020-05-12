@@ -98,25 +98,17 @@ r_t=[]
 num1=500
 for i in range(10000-num1):
     r_t.append(np.average(Histograma[i:i+num1]))
-plt.plot(range(10000-num1),r_t)
+
 
 """Graficasmos los datos obtenidos"""
 
-fig,(Fig1,Fig2,Fig3)=plt.subplots(3,1)
-Fig1.hist(Intervalo_Interspikes,25)
-Fig2.hist(P_n,15)
-
-plt.figure()
-
-plt.subplot(121)
-plt.hist(Intervalo_Interspikes,15)
-plt.title("Interspike Intervarl")
-
-plt.subplot(122)
-plt.hist(P_n,15)
-plt.title("P[n]")
-plt.subplots_adjust(top=0.92, bottom=0.08, left=0.10, right=0.95, hspace=0.25,wspace=0.35)
-
-
-# plt.savefig("Multi",format='pdf')
-plt.show()
+fig,(Fig1,Fig2,Fig3)=plt.subplots(3,1,figsize=(20,35))
+Fig1.hist(Intervalo_Interspikes,25,label="InterSpike_Interval")
+Fig1.legend()
+Fig1.autoscale()
+Fig2.hist(P_n,15,label="Histograma P(n)")
+Fig2.legend()
+Fig2.autoscale()
+Fig3.plot(range(10000-num1),r_t,label="Histograma r(t)")
+Fig3.legend()
+Fig3.autoscale()
