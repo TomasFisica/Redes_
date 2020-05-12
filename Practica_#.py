@@ -38,35 +38,51 @@ def Coeficiente_variabilidad(inter):
     print("El coeficiente de variabilidad es :",CV)
 
 
+def InterspikeIntervalo(spikes):
+    """Funcion para crear una lista para graficar 
+    los interspikes interval"""
+    interspike_interval=[]
+    for i in range(128):
+        j=spikes[i][:].argmax()
+        k=-1
+        while True:
+            if (spikes[i][j] == 1 and spikes[i][j+1:].max() == 1):
+                maximo=spikes[i][j+1:].argmax()
+                interspike_interval.append(maximo+1)
+                j+=maximo+1
+               
+            if j==k:
+                break
+            k=j
+    return interspike_interval
+
+def Histograma_Pn(spikess):
+    P__n=[]
+    spike_flat=spikess.flatten()
+    for i in range(int(spike_flat.shape[0]/1000)):
+        P__n.append(np.sum(spike_flat[i*1000:(i+1)*1000]))    
+    return P__n
+
+
 """Lectura de datos"""
-spike=np.loadtxt("/home/tomas_vill/Escritorio/Redes_Neuro/Practica_3/spike.dat")
-stimulus=np.loadtxt("/home/tomas_vill/Escritorio/Redes_Neuro/Practica_3/stimulus.dat")
+spike=np.loadtxt("/home/tomas_vill/Escritorio/Redes_Neuro/Practica_3/Redes_/spike.dat")
+stimulus=np.loadtxt("/home/tomas_vill/Escritorio/Redes_Neuro/Practica_3/Redes_/stimulus.dat")
 
 """ Ejercicio a Armando el histograma de Interspike_interval bajo denominacion
 Interspike_interval"""
-Interspike_interval=[]
-for i in range(128):
-    j=spike[i][:].argmax()
-    k=-1
-    while True:
-        if (spike[i][j] == 1 and spike[i][j+1:].max() == 1):
-            maximo=spike[i][j+1:].argmax()
-            Interspike_interval.append(maximo+1)
-            j+=maximo+1
-            
-        if j==k:
-            break
-        k=j
+
+Intervalo_Interspikes=InterspikeIntervalo(spike)
 
 """Coeficiente de Variabilidad"""
-Coeficiente_variabilidad(np.array(Interspike_interval))
+
+Coeficiente_variabilidad(np.array(Intervalo_Interspikes))
 
 """ Ejercicio 2 Armando el histograma de P[n] bajo denominacion P_n"""
-P_n=[]
-spike_flat=spike.flatten()
 
-for i in range(int(spike_flat.shape[0]/1000)):
-    P_n.append(np.sum(spike_flat[i*1000:(i+1)*1000]))  
+P_n=Histograma_Pn(spike)
+# =============================================================================
+# # Si quiero graficar ahora el P_n_ despues borrar
+# =============================================================================
 plt.hist(P_n,15)
 
 """Factor de Fanon"""
@@ -85,14 +101,15 @@ for i in range(10000-num1):
 plt.plot(range(10000-num1),r_t)
 
 """Graficasmos los datos obtenidos"""
+
 fig,(Fig1,Fig2,Fig3)=plt.subplots(3,1)
-Fig1.hist(Interspike_interval,15)
+Fig1.hist(Intervalo_Interspikes,25)
 Fig2.hist(P_n,15)
 
 plt.figure()
 
 plt.subplot(121)
-plt.hist(Interspike_interval,15)
+plt.hist(Intervalo_Interspikes,15)
 plt.title("Interspike Intervarl")
 
 plt.subplot(122)
