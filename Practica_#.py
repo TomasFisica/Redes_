@@ -62,7 +62,9 @@ def Histograma_Pn(spikess):
     for i in range(int(spike_flat.shape[0]/1000)):
         P__n.append(np.sum(spike_flat[i*1000:(i+1)*1000]))    
     return P__n
-
+def Tiggered_Average(sizewind):
+    size_wind=sizewind
+    
 
 """Lectura de datos"""
 spike=np.loadtxt("/home/tomas_vill/Escritorio/Redes_Neuro/Practica_3/Redes_/spike.dat")
@@ -112,3 +114,9 @@ Fig2.autoscale()
 Fig3.plot(range(10000-num1),r_t,label="Histograma r(t)")
 Fig3.legend()
 Fig3.autoscale()
+
+
+fa=[i for i in range(len(de)) if de[i]==1 ]
+cas=[sum(di[i-3:i]) for i in fa ]
+
+cas_2=[sum(di[i-3:i]) for i in range(len(de)) if de[i]==1]
