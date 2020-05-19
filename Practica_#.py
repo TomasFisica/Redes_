@@ -62,9 +62,19 @@ def Histograma_Pn(spikess):
     for i in range(int(spike_flat.shape[0]/1000)):
         P__n.append(np.sum(spike_flat[i*1000:(i+1)*1000]))    
     return P__n
-def Tiggered_Average(sizewind):
-    size_wind=sizewind
-    
+def Tiggered_time(num):
+    tigger_av=lambda size_wind,vuelta: [sum(stimulus[i-size_wind:i,1]/0.1*size_wind) for i in range(len(spike[0])) if spike[vuelta][i]==1]
+    # Determino s(ti-tau) para un tau fijo y un determinado trial
+    # La funcion devuelve una lista con los n s(ti-tau)
+    prom_tigg=lambda  size:[np.mean(tigger_av(size,i)) for i in range(128) ]
+    # Determino C(tau): el promedio de los s(ti-tau)
+    # La funcion devuelve una lista con los 128 C(tau) de todos los trial para un mismo tau
+    prom_tigg_trial=lambda num: [np.mean(prom_tigg(i)) for i in range(num)]
+    #Determino C en funcion de tau 
+    # La funcion devuelve una lista con C en funcion de tau 
+    graf=lambda num: plt.plot(range(num),prom_tigg_trial(num) )
+    #Grafica
+    return prom_tigg_trial(num)
 
 """Lectura de datos"""
 spike=np.loadtxt("/home/tomas_vill/Escritorio/Redes_Neuro/Practica_3/Redes_/spike.dat")
@@ -101,22 +111,25 @@ num1=500
 for i in range(10000-num1):
     r_t.append(np.average(Histograma[i:i+num1]))
 
-
+# =============================================================================
+# Determinar el Spike-Tiggeered Average
+# =============================================================================
+Tigger=Tiggered_time(15)
 """Graficasmos los datos obtenidos"""
 
-fig,(Fig1,Fig2,Fig3)=plt.subplots(3,1,figsize=(20,35))
+fig,(Fig1,Fig2,Fig3,Fig4)=plt.subplots(4,1,figsize=(20,35))
 Fig1.hist(Intervalo_Interspikes,25,label="InterSpike_Interval")
 Fig1.legend()
 Fig1.autoscale()
 Fig2.hist(P_n,15,label="Histograma P(n)")
 Fig2.legend()
 Fig2.autoscale()
-Fig3.plot(range(10000-num1),r_t,label="Histograma r(t)")
+Fig3.plot([i*0.1 for i in range(10000-num1)],r_t,label="Histograma r(t)")
 Fig3.legend()
 Fig3.autoscale()
+Fig4.plot([i*0.1 for i in range(len(Tigger))],Tigger,label="Spike-Tiggered Average")
+Fig4.legend()
+Fig4.autoscale()
 
 
-fa=[i for i in range(len(de)) if de[i]==1 ]
-cas=[sum(di[i-3:i]) for i in fa ]
 
-cas_2=[sum(di[i-3:i]) for i in range(len(de)) if de[i]==1]
